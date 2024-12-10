@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marks Report</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #2a5470);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            transition: all 0.4s ease; /* Smooth overall transition */
+        }
+
+        .container {
+            background: #23233b;
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.6s ease, opacity 0.6s ease; /* Transition for form */
+        }
+
+        .container h3 {
+            text-align: center;
+            font-size: 28px;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            display: block;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #44475a;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-top: 5px;
+            background: #282c36;
+            color: #d1d1e0;
+            outline: none;
+        }
+
+        input:focus {
+            border: 2px solid #4e89ff;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: #4e89ff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: #3b6dc7;
+        }
+
+        .results-container {
+            display: none;
+            background: #2a2a4d;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transform: translateX(50px);
+            transition: transform 0.6s ease, opacity 0.6s ease; /* Transition for results */
+        }
+
+        .results-container h3 {
+            font-size: 24px;
+            color: #4e89ff;
+            margin-bottom: 10px;
+        }
+
+        .results-container p {
+            font-size: 16px;
+            margin: 5px 0;
+            color: #d1d1e0;
+        }
+
+        .congratulations {
+            font-size: 18px;
+            margin-top: 20px;
+            color: #4e89ff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Form Container -->
+    <div class="container" id="form-container">
+        <h3>Marks Report</h3>
+
+        <!-- Input Form -->
+        <label for="rno">Roll No</label>
+        <input type="text" id="rno" placeholder="Enter roll number" />
+
+        <label for="sna">Name</label>
+        <input type="text" id="sna" placeholder="Enter student name" />
+
+        <label for="hm">HTML</label>
+        <input type="number" id="hm" placeholder="Enter marks for HTML" />
+
+        <label for="cm">CSS</label>
+        <input type="number" id="cm" placeholder="Enter marks for CSS" />
+
+        <label for="jm">JavaScript</label>
+        <input type="number" id="jm" placeholder="Enter marks for JavaScript" />
+
+        <button onclick="getResult()">Submit</button>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-container" id="results">
+        <h3>Results Summary</h3>
+        <p id="rollNo"></p>
+        <p id="name"></p>
+        <p id="total"></p>
+        <p id="average"></p>
+        <p id="grade"></p>
+        <p class="congratulations" id="congratsMessage"></p>
+    </div>
+
+    <script>
+        function getResult() {
+            // Get Input Values
+            const rollNo = document.getElementById("rno").value.trim();
+            const name = document.getElementById("sna").value.trim();
+            const htmlMarks = parseFloat(document.getElementById("hm").value) || 0;
+            const cssMarks = parseFloat(document.getElementById("cm").value) || 0;
+            const jsMarks = parseFloat(document.getElementById("jm").value) || 0;
+
+            // Validation
+            if (!rollNo || !name) {
+                alert("Please fill in all fields.");
+                return;
+            }
+            if (htmlMarks < 0 || cssMarks < 0 || jsMarks < 0) {
+                alert("Marks cannot be negative.");
+                return;
+            }
+
+            // Calculate Results
+            const total = htmlMarks + cssMarks + jsMarks;
+            const average = total / 3;
+            let grade;
+
+            if (htmlMarks >= 40 && cssMarks >= 40 && jsMarks >= 40) {
+                if (average >= 90) grade = "A+";
+                else if (average >= 80) grade = "A";
+                else if (average >= 70) grade = "B+";
+                else if (average >= 60) grade = "B";
+                else if (average >= 50) grade = "C";
+                else grade = "D";
+            } else {
+                grade = "Fail";
+            }
+
+            // Display Results
+            document.getElementById("rollNo").textContent = `Roll No: ${rollNo}`;
+            document.getElementById("name").textContent = `Name: ${name}`;
+            document.getElementById("total").textContent = `Total Marks: ${total}`;
+            document.getElementById("average").textContent = `Average: ${average.toFixed(2)}%`;
+            document.getElementById("grade").textContent = `Grade: ${grade}`;
+
+            // Congratulatory Message
+            const congratsMessage = grade !== "Fail" ? "Congratulations on your performance!" : "Better luck next time!";
+            document.getElementById("congratsMessage").textContent = congratsMessage;
+
+            // Hide the Form and Show the Results
+            document.getElementById("form-container").style.transform = "translateX(-100%)"; // Move form to the left
+            document.getElementById("form-container").style.opacity = "0"; // Fade out form
+
+            // Show Results Section with animation
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.style.display = "block";
+            setTimeout(() => {
+                resultsContainer.style.transform = "translateX(0)";
+                resultsContainer.style.opacity = "1";
+            }, 200); // Delay the results section transition slightly
+        }
+    </script>
+</body>
+</html>
